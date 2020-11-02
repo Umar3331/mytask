@@ -1,0 +1,118 @@
+---
+- name: Database
+  hosts: dbservers
+  gather_facts: yes
+  become: true
+  vars_files:
+    - vars/default.yml
+
+  tasks:
+    - name: Install
+      yum: name={{ item }} update_cache=yes state=latest
+      loop: ['mysql-server', 'MySQL-python', 'php', 'php-mysqlnd']
+      tags: [ system ]
+
+    - name: Install PHP Extensions
+      yum: name={{ item }} update_cache=yes state=latest
+      loop: "{{ php_modules }}"
+      tags: [ system ]
+
+    - name: start mariadb
+      service:
+        name: mariadb
+        enabled: true
+        state: started
+
+    - name: Set the root password
+      mysql_user:
+        check_implicit_admin: true
+        login_user: "{{ mysql_root_user }}"
+        login_password: "{{ mysql_root_password }}"
+        user: "{{ mysql_root_user }}"
+        password: "{{ mysql_root_password }}"
+      tags: [ mysql, mysql-root ]
+
+    - name: Remove all anonymous user accounts
+      mysql_user:
+        name: ''
+        host_all: yes
+        state: absent
+        login_user: root
+        login_password: "{{ mysql_root_password }}"
+      tags: [ mysql ]
+
+    - name: Remove the MySQL test database
+      mysql_db:
+        name: test
+        state: absent
+        login_user: root
+        login_password: "{{ mysql_root_password }}"
+      tags: [ mysql ]
+
+    - name: Creates database for WordPress
+      mysql_db:
+        name: "{{ mysql_db }}"
+        state: present
+        login_user: root
+        login_password: "{{ mysql_root_password }}"
+      tags: [ mysql ]
+
+    - name: Create MySQL user for WordPress
+      mysql_user:
+        name: "{{ mysql_user }}"
+        password: "{{ mysql_password }}"
+        priv: "{{ mysql_db }}.*:ALL"
+        state: present
+        login_user: root
+        login_password: "{{ mysql_root_password }}"
+      tags: [ mysql ]
+
+- name: Wordpress
+  hosts: webservers
+  gather_facts: yes
+  become: true
+  vars_files:
+    - vars/default.yml
+
+  tasks:
+    - name: Install LAMP Packages
+      yum: name={{ item }} update_cache=yes state=latest
+        loop: [ 'httpd', 'php']
+        tags: [ system ]
+
+    - name: Install PHP Extensions
+      yum: name={{ item }} update_cache=yes state=latest
+        loop: "{{ php_modules }}"
+        tags: [ system ]
+
+    - name: Download and unpack latest WordPress
+      unarchive:
+        src: https://wordpress.org/latest.tar.gz
+        dest: "/var/www/html"
+        remote_src: yes
+        creates: "/var/www/html/wordpress"
+      tags: [ wordpress ]
+
+    - name: setting DocumentRoot for wordpress
+      lineinfile:
+        dest=/etc/httpd/conf/httpd.conf
+        line="DocumentRoot /var/www/html/wordpress"
+      become: yes
+
+    - name: Set up wp-config
+      template:
+        src: "files/wp-config.php.j2"
+        dest: "/var/www/html/wordpress/wp-config.php"
+      tags: [ wordpress ]
+
+    - name: Reload Apache
+      service:
+        name: httpd
+        state: reloaded
+
+    - name: Restart Apache
+      service:
+        name: httpd
+        state: restarted
+
+
