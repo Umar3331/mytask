@@ -1,0 +1,22 @@
+proxy:
+  secretToken: "ee7bb681f172b598c28b5aa3412a72cdced59552289600659482f5f4ec0b5dff"
+  https:
+    enabled: false
+
+auth:
+  type: dummy
+  dummy:
+    password: 'supersecretpassword!'
+  whitelist:
+    users:
+      - Umar
+      - Janis
+      - Idriss
+      - Agnese
+      - Aliya
+
+singleuser:
+  storage:
+    capacity: 4Gi
+    dynamic:
+      storageClass: gp2

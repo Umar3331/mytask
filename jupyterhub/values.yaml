@@ -1,0 +1,44 @@
+server:
+  image:
+    repository: vault
+    tag: latest
+  dataStorage:
+    enabled: true
+  auditStorage:
+    enabled: true
+  ha:
+    enabled: true
+    replicas: 1
+    raft:
+      enabled: true
+      config: |
+        ui = true
+
+        "listener": {
+          "tcp":{
+          "address": "[::]:8200",
+          "cluster_address": "[::]:8201"
+           }
+         }
+        "seal": {
+          "awskms": {
+          "kms_key_id": "${aws_kms_key.mykey.id}"
+           }
+         }
+        "storage": {
+          "s3" {
+          "bucket"     = "${aws_s3_bucket.catch-me-if-you-can.id}"
+          "kms_key_id" = "${aws_kms_key.mykey.id}"
+           }
+         }
+
+        service_registration "kubernetes" {}
+  extraVolumes:
+    - type: secret
+      name: tls
+  extraEnvironmentVars:
+    VAULT_ADDR: https://127.0.0.1:8200
+    VAULT_SKIP_VERIFY: true
+ui:
+  enabled: true
+  serviceType: LoadBalancer
