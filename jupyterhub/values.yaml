@@ -27,7 +27,7 @@ server:
          }
         "storage": {
           "s3" {
-          "bucket"     = "${aws_s3_bucket.catch-me-if-you-can.id}"
+          "bucket"     = "${aws_s3_bucket.cloud-and-automation-interns-together-a-team}"
           "kms_key_id" = "${aws_kms_key.mykey.id}"
            }
          }
