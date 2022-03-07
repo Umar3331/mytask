@@ -1,21 +1,51 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Form site</title>
+    <title>Login Page</title>
     <style>
-        form{padding-top: 120px;
-             text-allign: center;
-             font-size: 30px;}
-        input{width: 250px;
-              height: 40px;
-              font-size: 30px;}
+        body{background-image: url('img.jpg');
+             padding-top: 50px;
+             padding-right: 400px;
+             padding-left: 400px;
+             text-align: center;
+        }
+        h2{color: rgb(143, 52, 179);
+            font-size: 20pt;
+        }
+        form{background-color: rgb(248, 246, 248);
+             border: 1px solid rgb(193, 190, 194);
+             border-radius: 10px; 
+             padding-top: 5px;
+             padding-bottom: 5px;
+             font-size: 20px;
+        }
+        input{display: block;
+              border: 1px solid rgb(193, 190, 194);
+              border-radius: 10px;
+              width: 210px;
+              height: 35px;
+              font-size: 15px;
+              margin: auto;
+        }
+        button{display: block;
+               background-color: rgb(146, 161, 145);
+               color:rgb(0, 0, 0);
+               border: 1px solid rgb(193, 190, 194);
+               border-radius: 10px;
+               width: 130px;
+               height: 35px;
+               font-size: 20px;
+               margin: auto;
+        }
     </style>
 </head>
 <body>
 <form method="post" action="index.php">
-Username : <input type="text" name="username"><br><br>
-Password : <input type="password" name="password"><br><br>
-<input type="submit" value="Submit">
+    <h2>Hello, there! My name is Sintija and currently I am working on the development of my first webpage.</h2>
+    Username : <input type="text" name="username"><br>
+    Password : <input type="password" name="password"><br>
+    <button type="submit">Login</button><br> 
 </form>
 </body>
 </html>
+
