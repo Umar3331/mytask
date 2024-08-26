@@ -1,0 +1,30 @@
+version: '3'
+services:
+  app:
+    build: .
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+      - selenium
+    environment:
+      TELEGRAM_TOKEN: your-telegram-bot-token
+      DB_HOST: db
+      DB_USER: root
+      DB_PASS: password
+      DB_NAME: appointments
+    command: ["./wait-for-it.sh", "db", "--", "python", "app/main.py"]
+
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: appointments
+    ports:
+      - "3306:3306"
+
+  selenium:
+    image: selenium/standalone-chrome
+    ports:
+      - "4444:4444"
+
