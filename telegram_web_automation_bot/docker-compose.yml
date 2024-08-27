@@ -8,7 +8,7 @@ services:
       - db
       - selenium
     environment:
-      TELEGRAM_TOKEN: your-telegram-bot-token
+      TELEGRAM_TOKEN: 7275828858:AAES4f44T8-lXwkvC8TXsyB5D9e36ptngHE
       DB_HOST: db
       DB_USER: root
       DB_PASS: password

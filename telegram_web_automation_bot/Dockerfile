@@ -19,8 +19,7 @@ WORKDIR /app
 COPY . /app
 
 # Install Python dependencies
-RUN pip install --no-cache-dir Flask selenium python-telegram-bot mysql-connector-python
-
+RUN pip install --no-cache-dir Flask[async] selenium python-telegram-bot==13.15 mysql-connector-python python-dotenv aiohttp
 # Run the application with wait-for-it script
 CMD ["./wait-for-it.sh", "db:3306", "--", "python", "app/main.py"]
 
